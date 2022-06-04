@@ -4,11 +4,10 @@ from nextcord.ext import commands
 import os
 import nextcord
 import json
-# from config import Token
-
-
-
-
+from argparse import ArgumentParser
+from urllib.parse import parse_qsl, urlparse
+import requests
+import tweepy
 
 client = commands.Bot(command_prefix='.')
 
@@ -23,7 +22,12 @@ async def on_ready():
 with open('./resources/config.json') as f:
     data = json.load(f)
     token = data["token"]
-    # prefix = data["PREFIX"]
+    CONSUMER_KEY = data["CONSUMER_KEY"]
+    CONSUMER_SECRET = data["CONSUMER_SECRET"]
+    ACCESS_TOKEN = data["ACCESS_TOKEN"]
+    ACCESS_TOKEN_SECRET = data["ACCESS_TOKEN_SECRET"]
+
+    
  
 
 
@@ -46,6 +50,33 @@ async def reload(ctx):
                     print(f'"**{filename}**" Cog reloaded')
     except Exception as e:
         return print(e)
+
+
+
+
+def main():
+    twitter_auth_keys = {
+        "consumer_key"        :  CONSUMER_KEY,
+        "consumer_secret"     :  CONSUMER_SECRET,
+        "access_token"        :  ACCESS_TOKEN,
+        "access_token_secret" :  ACCESS_TOKEN_SECRET
+    }
+ 
+    auth = tweepy.OAuthHandler(
+            twitter_auth_keys['consumer_key'],
+            twitter_auth_keys['consumer_secret']
+            )
+    auth.set_access_token(
+            twitter_auth_keys['access_token'],
+            twitter_auth_keys['access_token_secret']
+            )
+    api = tweepy.API(auth)
+ 
+    tweet = "Test 2 tweet python"
+    status = api.update_status(status=tweet)
+ 
+# if __name__ == "__main__":
+#     main()
 
 
 

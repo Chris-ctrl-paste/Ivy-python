@@ -19,6 +19,7 @@ class motivation(commands.Cog):
         with open("./resources/motivational.json") as f:
             content = json.loads(f.read())
 
+        
         quote = random.choice(content['quotes'])
         wtf = quote['text']
         xd = quote['author']
