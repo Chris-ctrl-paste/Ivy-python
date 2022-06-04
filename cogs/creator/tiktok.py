@@ -1,9 +1,8 @@
-import asyncio
 from interactions import Channel
 import nextcord
 from nextcord.ext import commands
 from tiktok_downloader import ttdownloader
-import time
+
 
 guilds = [647250925282656287]
 

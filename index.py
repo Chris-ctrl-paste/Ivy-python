@@ -1,4 +1,4 @@
-from nextcord import Interaction, SlashOption, ChannelType
+from nextcord import Interaction, SlashOption, ChannelType, Activity, ActivityType
 from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 import os
@@ -8,8 +8,10 @@ from argparse import ArgumentParser
 from urllib.parse import parse_qsl, urlparse
 import requests
 import tweepy
-
-client = commands.Bot(command_prefix='.')
+intents = nextcord.Intents.all()
+intents.members = True
+intents.presences = True
+client = commands.Bot(command_prefix='.', intents=intents)
 
 guild_ids = [647250925282656287]
 
@@ -17,7 +19,7 @@ guild_ids = [647250925282656287]
 @client.event
 async def on_ready():
     print(f'{client.user} has logged in.')
-    
+    await client.change_presence(activity=nextcord.Game(name="Trying my best"))
 
 with open('./resources/config.json') as f:
     data = json.load(f)
@@ -28,6 +30,40 @@ with open('./resources/config.json') as f:
     ACCESS_TOKEN_SECRET = data["ACCESS_TOKEN_SECRET"]
 
     
+ 
+@client.event
+async def on_presence_update(before, after):
+   
+    activity_type = None
+    streaming_role = after.guild.get_role(772062410789617696)
+    try:
+        activity_type = after.activity.type
+    except:
+        pass
+
+    if (activity_type is not nextcord.ActivityType.playing):
+        if streaming_role in after.roles:
+            print(f"{after.display_name} has stopped streaming")
+            await after.remove_roles(streaming_role)
+    else:
+        if streaming_role not in after.roles:
+            print(f"{after.display_name} has started streaming")
+            await after.add_roles(streaming_role)
+
+        
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
 
 
@@ -79,7 +115,28 @@ def main():
 #     main()
 
 
+    
+    
+    
+    # print("Is this doing something?")
+    # activity_type = None
+    # streaming_role = after.guild.get_role(772062410789617696)
+    # try:
+    #     activity_type = after.activity.type
+    # except:
+    #     pass
 
+    # if not (activity_type is nextcord.ActivityType.playing):
+    #         # User is doing something other than streaming
+    #     if streaming_role in after.roles:
+    #         print(f"{after.display_name} has stopped streaming")
+    #         await after.remove_roles(streaming_role)
+    # else:
+    #     if streaming_role not in after.roles:
+    #             # If they don't have the role, give it to them
+    #             # If they have it, we already know they're streaming so we don't need to do anything
+    #         print(f"{after.display_name} has started streaming")
+    #         await after.add_roles(streaming_role)
 
 
 client.run(token)
